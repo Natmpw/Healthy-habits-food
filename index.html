@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Healthy habits &amp; food</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:200,300,400,500,600,700" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background: #f1f1f1;
+            font-family: 'Work Sans', sans-serif;
+            color: #333;
+        }
+
+        /* --- NAVEGACIÓN --- */
+        nav {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 12px 24px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            color: #2f89fc;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-right: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            transition: max-height 0.35s ease, opacity 0.35s ease;
+        }
+
+        .nav-links a {
+            margin: 0 12px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .nav-toggle {
+            display: none;
+            width: 42px;
+            height: 42px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-toggle span {
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            height: 3px;
+            border-radius: 999px;
+            background: #333;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .nav-toggle span:nth-child(1) { top: 12px; }
+        .nav-toggle span:nth-child(2) { top: 19px; }
+        .nav-toggle span:nth-child(3) { top: 26px; }
+
+        .nav-toggle.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .nav-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-toggle.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .nav-links.open {
+            max-height: 260px;
+            opacity: 1;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: none;
+            margin: 0 auto;
+            background: white;
+        }
+
+        @media screen and (max-width: 760px) {
+            nav {
+                padding: 14px 16px;
+            }
+
+            .nav-links {
+                width: 100%;
+                max-height: 0;
+                overflow: hidden;
+                flex-direction: column;
+                align-items: stretch;
+                opacity: 0;
+            }
+
+            .nav-links a {
+                display: block;
+                width: 100%;
+                padding: 12px 0;
+                margin: 0;
+                border-top: 1px solid rgba(0,0,0,0.08);
+                text-align: center;
+            }
+
+            .nav-links a:first-child {
+                border-top: none;
+            }
+
+            .nav-toggle {
+                display: inline-flex;
+            }
+        }
+
+        /* Estado inicial: invisible y un poco abajo */
+        .reveal-effect {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        /* Estado cuando ya es visible */
+        .reveal-effect.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- SECCIÓN HERO (IMAGEN PEQUEÑA Y CENTRADA) --- */
+        .hero-img-container {
+            position: relative;
+        }
+
+        .hero-img-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        .hero-img {
+            width: 100%;
+            max-width: 2000px;
+            height: auto;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        .hero-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 1;
+            width: 90%;
+            margin: 0;
+            color: #fff;
+            font-size: 64px;
+            line-height: 1.1;
+            text-align: center;
+            text-shadow: 0 3px 12px rgba(0,0,0,0.45);
+            transform: translate(-50%, calc(-50% + 30px));
+        }
+
+        .hero-title.is-visible {
+            transform: translate(-50%, -50%);
+        }
+
+        /* --- INTRODUCCIÓN (1/2 IMAGEN, 1/2 TEXTO) --- */
+        .intro-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 60px 40px;
+            background: #fff;
+        }
+
+        .intro-img-box {
+            flex: 1 1 50%;
+            padding: 20px;
+        }
+
+        .intro-img-box img {
+            width: 100%;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .intro-text-box {
+            flex: 1 1 50%;
+            padding: 20px;
+        }
+
+        .promo-banner {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 30px 10%;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            border-radius: 24px;
+            margin: 40px auto 0;
+            max-width: 1200px;
+        }
+
+        .promo-visual {
+            flex: 0 0 320px;
+            min-height: 360px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .promo-star {
+            position: absolute;
+            width: 210px;
+            height: 210px;
+            border-radius: 50%;
+            background: #ffd54f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 90px;
+            color: #fff;
+            box-shadow: 0 20px 50px rgba(255, 213, 79, 0.25);
+            top: 0;
+            left: 0;
+        }
+
+        .promo-book {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            border-radius: 32px;
+            background: #fff;
+            box-shadow: 0 18px 35px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .promo-book img {
+            width: 300px;
+            height: auto;
+        }
+
+        .promo-precio {
+            position: absolute;
+            top: 8px;
+            right: -10px;
+            z-index: 3;
+            width: 110px;
+        }
+
+        .promo-precio img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .promo-copy {
+            flex: 1 1 420px;
+        }
+
+        .promo-copy h3 {
+            margin: 0 0 12px;
+            font-size: 30px;
+            line-height: 1.1;
+            color: #212121;
+        }
+
+        .promo-copy p {
+            margin: 0 0 18px;
+            line-height: 1.7;
+            color: #555;
+            max-width: 580px;
+        }
+
+        .promo-button {
+            display: inline-block;
+            padding: 16px 28px;
+            background: #2f89fc;
+            color: #fff;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .promo-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 25px rgba(47, 137, 252, 0.22);
+        }
+
+        @media screen and (max-width: 900px) {
+            .promo-banner {
+                flex-direction: column;
+                padding: 30px 20px;
+            }
+
+            .promo-visual {
+                flex: 1 1 100%;
+                min-height: 260px;
+            }
+
+            .promo-copy {
+                flex: 1 1 100%;
+            }
+
+            .promo-precio {
+                top: 8px;
+                right: auto;
+                left: 50%;
+                transform: translateX(60px);
+            }
+        }
+
+        /* --- RECETARIO (4 COLUMNAS x 5 FILAS) --- */
+        .recetario-header {
+            text-align: center;
+            padding: 60px 0 20px;
+            background: #fafafa;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columnas fijas en PC */
+            gap: 25px;
+            padding: 40px 10%;
+            background: #fafafa;
+        }
+
+        .project-item {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-item:hover,
+        .premium-link:hover .project-item {
+            transform: translateY(-5px);
+        }
+
+        .premium-link:hover .project-item {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .premium-area {
+            grid-column: 1 / -1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-items {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            filter: blur(3px);
+            opacity: 0.9;
+        }
+
+        .premium-items a {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .premium-area::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(
+                to bottom,
+                rgba(241,241,241,0),
+                rgba(241,241,241,0.08) 12%,
+                rgba(241,241,241,0.18) 24%,
+                rgba(241,241,241,0.28) 36%,
+                rgba(241,241,241,0.42) 52%,
+                rgba(241,241,241,0.62) 70%,
+                rgba(241,241,241,0.82) 82%,
+                rgba(241,241,241,0.95)
+            );
+            z-index: 5;
+        }
+
+        .premium-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #222;
+            z-index: 10;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0.96),
+                rgba(255,255,255,0.3)
+            );
+            pointer-events: none;
+        }
+
+        .premium-lock-card {
+            pointer-events: auto;
+        }
+
+        .premium-lock-card {
+            background: rgba(255,255,255,0.95);
+            border: 1px solid rgba(200,200,200,0.4);
+            padding: 24px 32px;
+            border-radius: 18px;
+            text-align: center;
+            max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .premium-lock-card span {
+            display: block;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #111;
+        }
+
+        .premium-lock-card p {
+            margin: 0;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .project-item img {
+            width: 100%;
+            aspect-ratio: 1/1; /* Mantiene las imágenes cuadradas y uniformes */
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .project-item h3 {
+            margin: 10px 0 5px;
+            font-size: 18px;
+            color: #222;
+        }
+
+        .project-item span {
+            font-size: 13px;
+            color: #2f89fc;
+            font-weight: 500;
+        }
+
+        /* --- DONACIONES --- */
+        .donations {
+            padding: 80px 20px;
+            text-align: center;
+            background: #2f89fc;
+            color: white;
+        }
+
+        /* --- FOOTER OPTIMIZADO --- */
+        footer {
+            background: #000;
+            color: #fff;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            width: 60px;
+            height: 60px;
+            background: #333;
+            border: 2px solid #555;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            object-fit: cover;
+        }
+
+        /* --- RESPONSIVIDAD --- */
+        @media screen and (max-width: 1024px) {
+            .project-grid { grid-template-columns: repeat(2, 1fr); } /* 2 columnas en tablet */
+        }
+
+        @media screen and (max-width: 600px) {
+            .intro-section { flex-direction: column; padding: 20px; }
+            .intro-img-box, .intro-text-box { flex: 1 1 100%; }
+            .project-grid { grid-template-columns: 1fr; } /* 1 columna en celular */
+            .hero-img { width: 70%; }
+            .hero-title { font-size: 36px; }
+        }
+
+        @media (hover: hover) {
+            .project-item:hover {
+        transform: scale(1.05); /* Se agranda un 5% */
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15); /* Sombra más profunda al resaltar */
+        z-index: 10; /* Se asegura de que quede por encima de las demás */
+        cursor: pointer;
+    }
+}
+    </style>
+</head>
+<body id="top">
+
+    <nav>
+        <div class="nav-inner">
+            <a class="brand" href="#top">Healthy habits &amp; food</a>
+            <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a href="#intro">Inicio</a>
+                <a href="#libro">Libro</a>
+                <a href="#recetario">Recetas</a>
+                <a href="#donaciones">Donar</a>
+                <a href="#contacto">Soporte</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        
+        <div class="hero-img-container">
+            <img src="imagenes/yws.png" class="hero-img reveal-effect" alt="Hero">
+            <h1 class="hero-title reveal-effect">Healthy habits &amp; food</h1>
+        </div>
+
+        <section id="intro" class="intro-section">
+            <div class="intro-img-box">
+                <img src="imagenes/image_1_edit.png" class="reveal-effect" alt="Comida Sana">
+            </div>
+            <div class="intro-text-box">
+                <h2 style="text-transform: uppercase;">Alimentación para el mañana</h2>
+                <p>Somos una organización comprometida con la salud. Creemos que la arquitectura de un cuerpo sano comienza con lo que decides poner en tu mesa hoy.</p>
+            </div>
+        </section>
+
+        <div id="libro" class="promo-banner reveal-effect">
+            <div class="promo-visual">
+                <div class="promo-star">
+                   
+                </div>
+                <div class="promo-book">
+                    <img src="imagenes/libro ca.png" class="reveal-effect" alt="Libro de recetas">
+                </div>
+                <div class="promo-precio">
+                    <img src="imagenes/precio.png" alt="precio: quince soles">
+                </div>
+            </div>
+            <div class="promo-copy">
+                <span style="display:block; color:#2f89fc; font-weight:700; margin-bottom:12px; text-transform: uppercase; letter-spacing: 1px;">Nuevo libro</span>
+                <h3>Compra el libro de recetarios saludables</h3>
+                <p>Disfruta recetas listas para cada día, con combinaciones nutritivas y sencillas. Ideal para llevar tu plan de alimentación al siguiente nivel.</p>
+                <a class="promo-button" href="https://example.com/ref">Comprar libro</a>
+            </div>
+        </div>
+
+        <div id="recetario" class="recetario-header">
+            <h2 style="font-size: 32px;">RECETARIO</h2>
+            <p style="color: #777;">Explora nuestras 20 sugerencias saludables</p>
+        </div>
+        <div class="project-grid">
+            <a href="recetario.html?id=tostadas" style="text-decoration: none; color: inherit;"> 
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/imagen_3_p.png" alt="Receta">
+                   <h3>Tostadas Integrales</h3>
+                   <span>Desayuno Energético</span>
+                </div>
+            </a>
+            <a href="recetario.html?id=panqueques" style="text-decoration: none; color: inherit">
+               <div class="project-item reveal-effect">
+                    <img src="imagenes/image_4_p.png" alt="Receta">
+                    <h3>Panqueques de avena</h3>
+                    <span>Desayuno Energético</span>
+               </div>
+            </a>
+            <a href="recetario.html?id=torrejas" style="text-decoration: none; color: inherit">
+            <div class="project-item reveal-effect">
+                <img src="imagenes/image_5_p.png" alt="Receta">
+                <h3>Torrejas de atún</h3>
+                <span>Desayuno Energético</span>
+            </div>
+            </a>
+            <a href="recetario.html?id=wrap" style="text-decoration: none; color: inherit">
+                <div class="project-item reveal-effect">
+                      <img src="imagenes/image_7_p.png" alt="Receta">
+                      <h3>Wrap integral de desayuno</h3>
+                       <span>Desayuno Energético</span>
+                </div>
+            </a>
+            <a href="recetario.html?id=sandwich" style="text-decoration: none; color: inherit">
+                <div class="project-item reveal-effect">
+                   <img src="imagenes/image_8_p.png" alt="Receta">
+                   <h3>Sándwich integral de pollo</h3>
+                   <span>Desayuno Energético</span>
+                </div>
+            </a>
+            <a href="recetario.html?id=avena" style="text-decoration: none; color: inherit">
+               <div class="project-item reveal-effect">
+                 <img src="imagenes/image_9_p.png" alt="Receta">
+                 <h3>avena con fruta fresca</h3>
+                 <span>Desayuno Energético</span>
+               </div>
+            </a>
+
+           <a href="recetario.html?id=tostadas2" style="text-decoration: none; color: inherit">
+                <div class="project-item reveal-effect">
+                  <img src="imagenes/image_10_p.png" alt="Receta">
+                  <h3>Tostada con Queso Mascarpone con toque de jalea de Arándanos</h3>
+                  <span>Desayuno Energético</span>
+                </div>
+           </a>
+           <a href="recetario.html?id=papa" style="text-decoration: none; color: inherit;">
+            <div class="project-item reveal-effect">
+               <img src="imagenes/image_11_p.png" alt="Atún con papa amarilla y jugo de frutas">
+               <h3>Atún con papa amarilla y jugo de frutas</h3>
+               <span>Desayuno Energético</span>
+            </div>
+           </a>
+
+          <a href="recetario.html?id=pollo-arroz-integral" style="text-decoration: none; color: inherit;"> 
+              <div class="project-item reveal-effect">
+                    <img src="imagenes/image_12_p.png" alt="Pollo a la plancha con arroz integral">
+                    <h3>Pollo a la plancha con arroz integral</h3>
+                    <span>Almuerzo saludable</span>
+             </div>
+          </a>
+           <a href="recetario.html?id=lentejas-guisadas-verduras" style="text-decoration: none; color: inherit;">
+              <div class="project-item reveal-effect">
+                    <img src="imagenes/image_13_p.png" alt="Lentejas guisadas con verduras">
+                    <h3>Lentejas guisadas con verduras</h3>
+                    <span>Almuerzo Saludable</span>
+                </div>
+           </a>
+            <a href="recetario.html?id=pescado-horno-pure" style="text-decoration: none; color: inherit">
+                <div class="project-item reveal-effect">
+                    <img src="imagenes/image_14_p.png" alt="Pescado al horno con puré">
+                    <h3>Pescado al horno con pure</h3>
+                    <span>Almuerzo Saludable</span>
+                </div>
+           </a>
+           <a href="recetario.html?id=salteado-de-pollo" style="text-decoration: none; color: inherit;">
+            <div class="project-item reveal-effect">
+                <img src="imagenes/image_15_p.png" alt="Salteado de pollo">
+                <h3>Salteado de pollo</h3>
+                <span>Almuerzo Saludable</span>
+            </div>
+           </a>
+
+           <a href="recetario.html?id=tacos-veganos" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_16_p.png" alt="Tacos Veganos">
+                   <h3>Tacos Veganos</h3>
+                   <span>Almuerzo Saludable</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=tortillas-espinaca" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_17_p.png" alt="Tortillas de espinaca">
+                   <h3>Tortillas de espinaca</h3>
+                   <span>Almuerzo Saludable</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=quinua-pollo-verdura" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_18_p.png" alt="Quinua con pollo y verdura">
+                   <h3>Quinua con pollo y verdura</h3>
+                   <span>Almuerzo Saludable</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=tallarines-integrales-salsa" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_19_p.png" alt="Tallarines integrales con salsa">
+                   <h3>Tallarines integrales con salsa</h3>
+                   <span>Almuerzo Saludable</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=crema-de-zapallo" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_20_p.png" alt="Crema de zapallo">
+                   <h3>Crema de zapallo</h3>
+                   <span>Cena Reparadora</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=ensalada-de-atun" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_21_p.png" alt="Ensalada de atún">
+                   <h3>Ensalada de atun</h3>
+                   <span>Cena Reparadora</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=ensalada-de-pollo" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_22_p.png" alt="Ensalada de pollo">
+                   <h3>Ensalada de pollo</h3>
+                   <span>Cena Reparadora</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=salteado-de-tofu" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_23_p.png" alt="Salteado de tofu">
+                   <h3>Salteado de tofu</h3>
+                   <span>Cena Reparadora</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=sopa-de-verduras" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_24_p.png" alt="Sopa de verduras">
+                   <h3>Sopa de verduras</h3>
+                   <span>Cena Reparadora</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=risotto-quinua-verduras" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_25_p.png" alt="Risotto de quinua con verduras">
+                   <h3>Risotto de quinua con verduras</h3>
+                   <span>Cena Reparadora</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=rollitos-de-col" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_26_p.png" alt="Rollitos de col">
+                   <h3>Rollitos de col</h3>
+                   <span>Cena Reparadora</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=papa-al-horno" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_27_p.png" alt="Papa al horno">
+                   <h3>Papa al horno</h3>
+                   <span>Cena Reparadora</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=pudin-de-chia" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_6_p.jpeg" alt="Pudin de Chia">
+                   <h3>Pudin de Chia</h3>
+                   <span>Postre Ligero</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=helado-de-platano" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_28_p.png" alt="Helado de platano">
+                   <h3>Helado de platano</h3>
+                   <span>Postre Ligero</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=manzanas-asadas-caramelo" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_29_p.png" alt="Manzanas asadas con caramelo">
+                   <h3>Manzanas asadas con caramelo</h3>
+                   <span>Postre Ligero</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=mouse-de-mango" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_30_p.png" alt="Mouse de mango">
+                   <h3>Mouse de mango</h3>
+                   <span>Postre Ligero</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=bolitas-energeticas-coco" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_31_p.png" alt="Bolitas energeticas de coco">
+                   <h3>Bolitas energeticas de coco</h3>
+                   <span>Postre Ligero</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=brownies-avena-coco" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_32_p.png" alt="Brownies de avena y coco">
+                   <h3>Brownies de avena y coco</h3>
+                   <span>Postre Ligero</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=parfait-de-frutas" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_33_p.png" alt="Parfait de frutas">
+                   <h3>Parfait de frutas</h3>
+                   <span>Postre Ligero</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=galletas-de-calabaza" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_34_p.png" alt="Galletas de calabaza">
+                   <h3>Galletas de calabaza</h3>
+                   <span>Postre Ligero</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=jugo-natural-pina" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_35_p.png" alt="Jugo natural de piña">
+                   <h3>Jugo natural de piña</h3>
+                   <span>Bebida balanceada</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=batido-de-fresa" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_36_p.png" alt="Batido de fresa">
+                   <h3>Batido de fresa</h3>
+                   <span>Bebida balanceada</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=batido-de-mango" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_37_p.png" alt="Batido de mango">
+                   <h3>Batido de mango</h3>
+                   <span>Bebida balanceada</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=limonada" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_38_p.png" alt="Limonada">
+                   <h3>Limonada</h3>
+                   <span>Bebida balanceada</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=jugo-de-naranja" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_39_p.png" alt="Jugo de naranja">
+                   <h3>Jugo de naranja</h3>
+                   <span>Bebida balanceada</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=te-verde" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_40_p.png" alt="Té verde">
+                   <h3>Té verde</h3>
+                   <span>Bebida balanceada</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=bebida-de-soya" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_41_p.png" alt="Bebida de soya">
+                   <h3>Bebida de soya</h3>
+                   <span>Bebida balanceada</span>
+               </div>
+           </a>
+
+           <a href="recetario.html?id=agua-de-pepino" style="text-decoration: none; color: inherit;">
+               <div class="project-item reveal-effect">
+                   <img src="imagenes/image_42_p.png" alt="Agua de pepino">
+                   <h3>Agua de pepino</h3>
+                   <span>Bebida balanceada</span>
+               </div>
+           </a>
+
+           <div class="premium-area">
+               <div class="premium-items">
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Smoothie rojo antioxidante">
+                           <h3>Smoothie rojo antioxidante</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Bowl de superalimentos">
+                           <h3>Bowl de superalimentos</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Ensalada verde deluxe">
+                           <h3>Ensalada verde deluxe</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Wrap gourmet de salmón">
+                           <h3>Wrap gourmet de salmón</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Sopa miso detox">
+                           <h3>Sopa miso detox</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Filete de salmón al vapor">
+                           <h3>Filete de salmón al vapor</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Pastel de quinoa y verduras">
+                           <h3>Pastel de quinoa y verduras</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Tartaleta saludable">
+                           <h3>Tartaleta saludable</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Mermelada casera sin azúcar">
+                           <h3>Mermelada casera sin azúcar</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Crema antioxidante de frutos rojos">
+                           <h3>Crema antioxidante de frutos rojos</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Jugo verde premium">
+                           <h3>Jugo verde premium</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+                   <a href="https://example.com/ref" class="premium-link">
+                       <div class="project-item reveal-effect">
+                           <img src="https://via.placeholder.com/300" alt="Postre cremoso sin culpa">
+                           <h3>Postre cremoso sin culpa</h3>
+                           <span>Contenido premium</span>
+                       </div>
+                   </a>
+               </div>
+               <div class="premium-overlay">
+                   <div class="premium-lock-card">
+                       <span>🔒 Bloqueado</span>
+                       <p>Este contenido es exclusivo para suscriptores.</p>
+                       <p>Haz clic para pagar y desbloquear todas las recetas.</p>
+                   </div>
+               </div>
+           </div>
+        </div>
+
+        <section id="donaciones" class="donations">
+            <h2 style="margin-bottom: 10px;">¿TE GUSTA NUESTRO CONTENIDO?</h2>
+            <p>Apóyanos con un donativo para seguir promoviendo la buena alimentación.</p>
+            <button style="background: white; color: #2f89fc; border: none; padding: 15px 30px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px;">DONAR AQUÍ</button>
+        </section>
+
+        <footer id="contacto">
+            <img class="footer-logo" src="imagenes/jejej logo.png" alt="Logo de Healthy habits &amp; food">
+            <h3 style="margin-bottom: 5px;">Healthy habits &amp; food</h3>
+            <p style="font-size: 14px; color: #aaa;">Soporte: +51 900 000 000 | info@healthyhabits.com</p>
+            <hr style="width: 50px; border: 1px solid #333; margin: 20px auto;">
+            <p style="font-size: 11px; color: #666;">© 2026 Todos los derechos reservados. Información e imágenes protegidas.</p>
+            <p style="font-size: 10px; font-style: italic; color: #555;">Créditos a los autores de las imágenes utilizadas.</p>
+        </footer>
+
+    </div>
+
+    <script>
+    const observerOptions = {
+        threshold: 0.1 // Se activa cuando el 10% del elemento es visible
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                // Si quieres que solo se anime una vez, añade:
+                // observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Buscamos todos los elementos que tengan la clase reveal-effect
+    document.querySelectorAll('.reveal-effect').forEach(el => {
+        observer.observe(el);
+    });
+
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+            const isExpanded = navLinks.classList.toggle('open');
+            navToggle.classList.toggle('active');
+            navToggle.setAttribute('aria-expanded', String(isExpanded));
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinks.classList.contains('open')) {
+                    navLinks.classList.remove('open');
+                    navToggle.classList.remove('active');
+                    navToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>

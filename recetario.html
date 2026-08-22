@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Detalle de Receta</title>
+    <style>
+        body { font-family: 'Work Sans', sans-serif; text-align: center; padding: 50px; background: #f9f9f9; }
+        .receta-container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        img { width: 100%; border-radius: 10px; }
+        .boton-volver { display: inline-block; margin-top: 20px; text-decoration: none; color: #2f89fc; font-weight: bold; }
+        
+        /* Esto le da una separación linda a las listas para que no se peguen */
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 10px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div class="receta-container" id="main-card">
+       <span id="recipe-subtitle" style="color: #2f89fc; font-weight: bold;"></span>
+          <h1 id="recipe-title">Cargando...</h1>
+    
+        <img id="recipe-img" src="" alt="">
+    
+        <div style="text-align: left; margin-top: 20px;">
+            <h3>Ingredientes:</h3>
+            <ul id="recipe-ingredients"></ul>
+
+            <h3>Pasos:</h3>
+            <ol id="recipe-steps"></ol>
+        
+        <div id="recipe-tip" style="background: #eef7ff; padding: 10px; border-radius: 5px; margin-top: 15px;"></div>
+    </div>
+
+    <a href="index.html" class="boton-volver">← Volver al recetario</a>
+    </div>
+
+    <script>
+    const baseDeDatos = {
+        "tostadas": {
+            titulo: "Tostadas Integrales con Aguacate",
+            sub: "Desayuno Energético",
+            imagen: "imagenes/image_3.png",
+            ingredientes: [ "2 rebanadas de pan integral", "1 aguacate maduro", "Semillas de sésamo", "Una pizca de sal y pimienta" ],
+            pasos: [ "Tuesta las rebanadas de pan integral hasta que estén doradas y crujientes.", "Corta la palta por la mitad, retira la semilla y colócala en un recipiente.", "Tritura la palta con un tenedor hasta obtener una textura cremosa.", "Agrega una pizca de sal y mezcla bien.", "Cocina el huevo en una sartén (puede ser frito, a la plancha o pochado).", "Unta la palta sobre las tostadas.", "Coloca el huevo encima de cada tostada.", "Añade tomate en rodajas si deseas.", "Espolvorea semillas y un poco de pimienta al gusto." ],
+            tip: "Agrega unas gotas de limón al aguacate para evitar que se oxide y darle un toque fresco."
+        },
+        "panqueques": {
+            titulo: "Panqueques de avena",
+            sub: "Desayuno Energético",
+            imagen: "imagenes/image_4.png",
+            ingredientes: ["1/2 taza de avena", "1 taza de leche vegetal", "Frutos rojos", "1 cucharada de miel"],
+            pasos: ["Mezcla todos los ingredientes en la licuadora.", "Calienta una sartén antiadherente y vierte un poco de la mezcla.", "Cocina hasta que salgan burbujas y dale la vuelta.", "Sirve con frutos rojos y miel."],
+            tip: "Puedes dejar la avena remojando desde la noche anterior para una textura más cremosa."
+        },
+        "torrejas": {
+            titulo: "Torrejas de Verdura",
+            sub: "Fibra y Energía",
+            imagen: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=800&q=80",
+            ingredientes: ["1/2 taza de avena", "1 taza de leche vegetal", "Frutos rojos", "1 cucharada de miel"],
+            pasos: ["six seven"],
+            tip: "Puedes dejar la avena remojando desde la noche anterior para una textura más cremosa."
+        },
+        "wrap": {
+            titulo: "Wrap integral de desayuno",
+            sub: "Fibra y Energía",
+            imagen: "imagenes/image_7.png",
+            ingredientes: ["1/2 taza de avena", "1 taza de leche vegetal", "Frutos rojos", "1 cucharada de miel"],
+            pasos: ["six seven"],
+            tip: "Puedes dejar la avena remojando desde la noche anterior para una textura más cremosa."
+        },
+        "sandwich": {
+            titulo: "Sándiwch de pollo",
+            sub: "Fibra y Energía",
+            imagen: "imagenes/image_8.png",
+            ingredientes: ["1/2 taza de avena", "1 taza de leche vegetal", "Frutos rojos", "1 cucharada de miel"],
+            pasos: ["six seven"],
+            tip: "Puedes dejar la avena remojando desde la noche anterior para una textura más cremosa."
+        },
+        "avena": {
+            titulo: "Avena con fruta fresca",
+            sub: "Fibra y Energía",
+            imagen: "imagenes/image_9.png",
+            ingredientes: ["1/2 taza de avena", "1 taza de leche vegetal", "Frutos rojos", "1 cucharada de miel"],
+            pasos: ["six seven"],
+            tip: "Puedes dejar la avena remojando desde la noche anterior para una textura más cremosa."
+        },
+        "tostadas2": {
+            titulo: "Tostada con Queso Mascarpone y Arándanos",
+            sub: "Desayuno Energético",
+            imagen: "imagenes/image_10.png",
+            ingredientes: ["1 rebanada de pan integral", "2 cucharadas de queso mascarpone", "1 cucharada de mermelada de arándanos", "Hojas de menta"],
+            pasos: ["Tuesta el pan integral hasta que esté dorado.", "Unta el queso mascarpone sobre la tostada.", "Agrega la mermelada de arándanos y decora con menta."],
+            tip: "Sirve inmediatamente para que el pan mantenga su textura crujiente."
+        },
+        "papa": {
+            titulo: "Atún con papa amarilla y jugo de frutas",
+            sub: "Desayuno Energético",
+            imagen: "imagenes/image_11.png",
+            ingredientes: ["1 papa amarilla cocida", "100 g de atún", "1 chorrito de aceite de oliva", "Perejil picado", "Sal y pimienta"],
+            pasos: ["Cocina la papa hasta que esté tierna.", "Mezcla el atún con aceite de oliva, sal y pimienta.", "Sirve el atún junto a la papa y espolvorea perejil."],
+            tip: "Añade unas gotas de limón para un sabor fresco."
+        },
+        "pollo-arroz-integral": {
+            titulo: "Pollo a la plancha con arroz integral",
+            sub: "Almuerzo saludable",
+            imagen: "imagenes/image_12.png",
+            ingredientes: ["150 g de pechuga de pollo", "1 taza de arroz integral cocido", "Verduras al gusto", "Aceite de oliva", "Sal y pimienta"],
+            pasos: ["Sazona el pollo y cocínalo a la plancha.", "Sirve el pollo sobre el arroz integral.", "Acompaña con verduras salteadas."],
+            tip: "Usa un poco de limón para realzar el sabor del pollo."
+        },
+        "lentejas-guisadas-verduras": {
+            titulo: "Lentejas guisadas con verduras",
+            sub: "Almuerzo Saludable",
+            imagen: "imagenes/image_13.png",
+            ingredientes: ["1 taza de lentejas", "1 zanahoria picada", "1 cebolla picada", "1 diente de ajo", "1 tomate picado"],
+            pasos: ["Sofríe la cebolla, el ajo y la zanahoria.", "Agrega las lentejas y el tomate.", "Cubre con agua y cocina hasta que las lentejas estén tiernas."],
+            tip: "Agrega comino o pimentón para un toque aromático."
+        },
+        "pescado-horno-pure": {
+            titulo: "Pescado al horno con puré",
+            sub: "Almuerzo Saludable",
+            imagen: "imagenes/image_14.png",
+            ingredientes: ["1 filete de pescado", "2 papas", "1 cucharada de mantequilla", "Leche", "Sal y pimienta"],
+            pasos: ["Hornea el pescado sazonado con sal y pimienta.", "Prepara un puré suave con papas, leche y mantequilla.", "Sirve el pescado junto al puré."],
+            tip: "Añade hierbas frescas como perejil o eneldo al puré."
+        },
+        "salteado-de-pollo": {
+            titulo: "Salteado de pollo",
+            sub: "Almuerzo Saludable",
+            imagen: "imagenes/image_15.png",
+            ingredientes: ["150 g de pollo en tiras", "1 pimiento", "1 zucchini", "Salsa de soja ligera", "Aceite de oliva"],
+            pasos: ["Saltea el pollo hasta que esté dorado.", "Agrega las verduras y cocina hasta tiernas.", "Salsa con un toque de soja ligera."],
+            tip: "No cocines de más las verduras para que queden crujientes." 
+        },
+        "tacos-veganos": {
+            titulo: "Tacos veganos",
+            sub: "Almuerzo Saludable",
+            imagen: "imagenes/image_16.png",
+            ingredientes: ["Tortillas de maíz", "Frijoles negros", "Aguacate", "Tomate", "Cilantro"],
+            pasos: ["Calienta las tortillas.", "Rellena con frijoles, tomate y aguacate.", "Decora con cilantro y limón."],
+            tip: "Añade un poco de salsa picante si te gusta el sabor fuerte." 
+        },
+        "tortillas-espinaca": {
+            titulo: "Tortillas de espinaca",
+            sub: "Almuerzo Saludable",
+            imagen: "imagenes/image_17.png",
+            ingredientes: ["1 taza de harina integral", "Espinacas picadas", "Agua", "Sal", "Aceite"],
+            pasos: ["Mezcla la harina con espinacas y agua.", "Forma las tortillas y cocínalas en una sartén.", "Sirve calientes."],
+            tip: "Puedes rellenarlas con queso fresco o hummus." 
+        },
+        "quinua-pollo-verdura": {
+            titulo: "Quinua con pollo y verdura",
+            sub: "Almuerzo Saludable",
+            imagen: "imagenes/image_18.png",
+            ingredientes: ["1 taza de quinua cocida", "150 g de pollo", "Verduras mixtas", "Aceite de oliva", "Sal"],
+            pasos: ["Cocina la quinua según instrucciones.", "Saltea el pollo y las verduras.", "Mezcla todo y sirve."],
+            tip: "Reserva agua de la quinua para ajustar la textura si hace falta." 
+        },
+        "tallarines-integrales-salsa": {
+            titulo: "Tallarines integrales con salsa",
+            sub: "Almuerzo Saludable",
+            imagen: "imagenes/image_19.png",
+            ingredientes: ["200 g de tallarines integrales", "Salsa de tomate", "Ajo", "Albahaca", "Aceite de oliva"],
+            pasos: ["Cocina los tallarines al dente.", "Prepara la salsa con tomate, ajo y albahaca.", "Mezcla los tallarines con la salsa."],
+            tip: "Agrega queso rallado solo al final." 
+        },
+        "crema-de-zapallo": {
+            titulo: "Crema de zapallo",
+            sub: "Cena Reparadora",
+            imagen: "imagenes/image_20.png",
+            ingredientes: ["500 g de zapallo", "1 cebolla", "1 diente de ajo", "Caldo de verduras", "Crema ligera"],
+            pasos: ["Sofríe la cebolla y el ajo.", "Agrega el zapallo y el caldo.", "Cocina hasta que esté tierno y licúa."],
+            tip: "Sirve con semillas tostadas por encima." 
+        },
+        "ensalada-de-atun": {
+            titulo: "Ensalada de atún",
+            sub: "Cena Reparadora",
+            imagen: "imagenes/image_21.png",
+            ingredientes: ["Atún en agua", "Lechuga", "Tomate","Aceitunas","Aceite de oliva"],
+            pasos: ["Mezcla todos los ingredientes.", "Aliña con aceite y limón.", "Sirve fría."],
+            tip: "Usa atún natural para una opción más ligera." 
+        },
+        "ensalada-de-pollo": {
+            titulo: "Ensalada de pollo",
+            sub: "Cena Reparadora",
+            imagen: "imagenes/image_22.png",
+            ingredientes: ["Pollo cocido desmenuzado", "Lechuga", "Pepino", "Zanahoria", "Aderezo ligero"],
+            pasos: ["Mezcla los ingredientes.", "Añade el pollo desmenuzado.", "Aliña y sirve."],
+            tip: "Puedes usar yogur natural como aderezo." 
+        },
+        "salteado-de-tofu": {
+            titulo: "Salteado de tofu",
+            sub: "Cena Reparadora",
+            imagen: "imagenes/image_23.png",
+            ingredientes: ["Tofu firme", "Brotes de soja", "Zanahoria", "Salsa de soja", "Aceite de sésamo"],
+            pasos: ["Corta el tofu en cubos.", "Saltea el tofu y las verduras.", "Añade salsa de soja y aceite de sésamo."],
+            tip: "Marina el tofu antes para un sabor más intenso." 
+        },
+        "sopa-de-verduras": {
+            titulo: "Sopa de verduras",
+            sub: "Cena Reparadora",
+            imagen: "imagenes/image_24.png",
+            ingredientes: ["Caldo de verduras", "Zanahoria", "Apio", "Papas", "Tomate"],
+            pasos: ["Hierve el caldo con las verduras.", "Cocina hasta que todo esté tierno.", "Sirve caliente."],
+            tip: "Agrega hierbas frescas al final." 
+        },
+        "risotto-quinua-verduras": {
+            titulo: "Risotto de quinua con verduras",
+            sub: "Cena Reparadora",
+            imagen: "imagenes/image_25.png",
+            ingredientes: ["Quinua", "Caldo de verduras", "Champiñones", "Espinacas", "Cebolla"],
+            pasos: ["Sofríe la cebolla y los champiñones.", "Agrega la quinua y el caldo.", "Cocina hasta que esté cremoso."],
+            tip: "Remueve constantemente para una textura suave." 
+        },
+        "rollitos-de-col": {
+            titulo: "Rollitos de col",
+            sub: "Cena Reparadora",
+            imagen: "imagenes/image_26.png",
+            ingredientes: ["Hojas de col", "Carne magra picada", "Arroz cocido", "Cebolla", "Tomate"],
+            pasos: ["Rellena las hojas de col con la mezcla.", "Enrolla y cocina al vapor.", "Sirve con salsa ligera."],
+            tip: "Blanquea las hojas de col antes de rellenar." 
+        },
+        "papa-al-horno": {
+            titulo: "Papa al horno",
+            sub: "Cena Reparadora",
+            imagen: "imagenes/image_27.png",
+            ingredientes: ["Papas", "Aceite de oliva", "Ajo", "Romero", "Sal"],
+            pasos: ["Corta las papas en gajos.", "Mezcla con aceite, ajo y romero.", "Hornea hasta que estén doradas."],
+            tip: "Sirve con una salsa ligera de yogur." 
+        },
+        "pudin-de-chia": {
+            titulo: "Pudín de chía",
+            sub: "Postre Ligero",
+            imagen: "imagenes/image_6.jpeg",
+            ingredientes: ["3 cucharadas de semillas de chía", "1 taza de leche vegetal", "Miel", "Fruta fresca"],
+            pasos: ["Mezcla la chía con la leche vegetal.", "Refrigera por al menos 4 horas.", "Sirve con fruta fresca y miel."],
+            tip: "Deja reposar la mezcla toda la noche para mejor textura." 
+        },
+        "helado-de-platano": {
+            titulo: "Helado de plátano",
+            sub: "Postre Ligero",
+            imagen: "imagenes/image_28.png",
+            ingredientes: ["2 plátanos maduros congelados", "1 cucharada de mantequilla de maní", "Un chorrito de leche vegetal"],
+            pasos: ["Licúa los plátanos congelados hasta obtener una textura cremosa.", "Añade mantequilla de maní y mezcla.", "Sirve inmediatamente."],
+            tip: "Puedes agregar cacao en polvo para un sabor diferente." 
+        },
+        "manzanas-asadas-caramelo": {
+            titulo: "Manzanas asadas con caramelo",
+            sub: "Postre Ligero",
+            imagen: "imagenes/image_29.png",
+            ingredientes: ["2 manzanas", "1 cucharada de miel", "Canela", "Nueces picadas"],
+            pasos: ["Corta las manzanas por la mitad.", "Rocía con miel y espolvorea canela.", "Hornea hasta que estén tiernas."],
+            tip: "Sirve con nueces tostadas por encima." 
+        },
+        "mouse-de-mango": {
+            titulo: "Mousse de mango",
+            sub: "Postre Ligero",
+            imagen: "imagenes/image_30.png",
+            ingredientes: ["1 mango maduro", "1 taza de yogur natural", "Miel"],
+            pasos: ["Licúa el mango con el yogur y la miel.", "Refrigera por al menos 1 hora.", "Sirve frío."],
+            tip: "Decora con hojas de menta fresca." 
+        },
+        "bolitas-energeticas-coco": {
+            titulo: "Bolitas energéticas de coco",
+            sub: "Postre Ligero",
+            imagen: "imagenes/image_31.png",
+            ingredientes: ["1 taza de avena", "1/2 taza de coco rallado", "Miel", "Mantequilla de almendra"],
+            pasos: ["Mezcla todos los ingredientes.", "Forma bolitas con la mezcla.", "Refrigera hasta que estén firmes."],
+            tip: "Puedes añadir chispas de chocolate oscuro." 
+        },
+        "brownies-avena-coco": {
+            titulo: "Brownies de avena y coco",
+            sub: "Postre Ligero",
+            imagen: "imagenes/image_32.png",
+            ingredientes: ["1 taza de avena molida", "1/2 taza de cacao", "1/2 taza de leche vegetal", "Miel"],
+            pasos: ["Mezcla todos los ingredientes.", "Hornea en un molde.", "Corta en porciones."],
+            tip: "Deja enfriar antes de cortar para que mantengan su forma." 
+        },
+        "parfait-de-frutas": {
+            titulo: "Parfait de frutas",
+            sub: "Postre Ligero",
+            imagen: "imagenes/image_33.png",
+            ingredientes: ["Yogur natural", "Frutas frescas", "Granola"],
+            pasos: ["Coloca capas de yogur, fruta y granola.", "Repite hasta llenar el vaso.", "Sirve frío."],
+            tip: "Usa frutas de temporada para más sabor." 
+        },
+        "galletas-de-calabaza": {
+            titulo: "Galletas de calabaza",
+            sub: "Postre Ligero",
+            imagen: "imagenes/image_34.png",
+            ingredientes: ["1 taza de puré de calabaza", "1 taza de harina integral", "Canela", "Miel"],
+            pasos: ["Mezcla todos los ingredientes.", "Forma las galletas.", "Hornea hasta que estén firmes."],
+            tip: "Añade nueces picadas para una textura crujiente." 
+        },
+        "jugo-natural-pina": {
+            titulo: "Jugo natural de piña",
+            sub: "Bebida balanceada",
+            imagen: "imagenes/image_35.png",
+            ingredientes: ["1/2 piña", "1 vaso de agua", "Hielo", "Hojas de menta"],
+            pasos: ["Licúa la piña con agua.", "Sirve con hielo.", "Decora con menta."],
+            tip: "Puedes añadir rodajas de jengibre para un toque picante." 
+        },
+        "batido-de-fresa": {
+            titulo: "Batido de fresa",
+            sub: "Bebida balanceada",
+            imagen: "imagenes/image_36.png",
+            ingredientes: ["1 taza de fresas", "1 taza de leche vegetal", "1 plátano"],
+            pasos: ["Licúa todos los ingredientes.", "Sirve frío.", "Disfruta al instante."],
+            tip: "Usa fresas maduras para más dulzura natural." 
+        },
+        "batido-de-mango": {
+            titulo: "Batido de mango",
+            sub: "Bebida balanceada",
+            imagen: "imagenes/image_37.png",
+            ingredientes: ["1 mango maduro", "1 taza de leche vegetal", "Hielo"],
+            pasos: ["Licúa todo hasta obtener una mezcla suave.", "Sirve frío.", "Decora con trozos de mango."],
+            tip: "Puedes agregar una pizca de jengibre fresco." 
+        },
+        "limonada": {
+            titulo: "Limonada",
+            sub: "Bebida balanceada",
+            imagen: "imagenes/image_38.png",
+            ingredientes: ["2 limones", "1 litro de agua", "Miel o stevia", "Hielo"],
+            pasos: ["Exprime los limones.", "Mezcla con agua y endulzante.", "Sirve con hielo."],
+            tip: "Añade hojas de menta para mayor frescura." 
+        },
+        "jugo-de-naranja": {
+            titulo: "Jugo de naranja",
+            sub: "Bebida balanceada",
+            imagen: "imagenes/image_39.png",
+            ingredientes: ["3 naranjas", "Hielo"],
+            pasos: ["Exprime las naranjas.", "Sirve con hielo.", "Disfruta natural."],
+            tip: "Consume recién hecho para mejores nutrientes." 
+        },
+        "te-verde": {
+            titulo: "Té verde",
+            sub: "Bebida balanceada",
+            imagen: "imagenes/image_40.png",
+            ingredientes: ["1 bolsita de té verde", "1 taza de agua caliente", "Miel opcional"],
+            pasos: ["Calienta el agua.", "Infusiona el té verde.", "Sirve caliente o frío."],
+            tip: "No dejes el té en infusión más de 3 minutos para evitar amargor." 
+        },
+        "bebida-de-soya": {
+            titulo: "Bebida de soya",
+            sub: "Bebida balanceada",
+            imagen: "imagenes/image_41.png",
+            ingredientes: ["1 taza de leche de soya", "Canela en polvo", "Miel opcional"],
+            pasos: ["Calienta la leche de soya.", "Añade canela y miel.", "Sirve caliente."],
+            tip: "Usa leche de soya sin azúcar para control de calorías." 
+        },
+        "agua-de-pepino": {
+            titulo: "Agua de pepino",
+            sub: "Bebida balanceada",
+            imagen: "imagenes/image_42.png",
+            ingredientes: ["1 pepino", "1 litro de agua", "Hojas de menta", "Hielo"],
+            pasos: ["Corta el pepino en rodajas.", "Agrega al agua y refrigera.", "Sirve con hielo."],
+            tip: "Deja reposar unas horas para que el sabor se concentre." 
+        }
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const idReceta = urlParams.get('id');
+    const receta = baseDeDatos[idReceta];
+
+    if (receta) {
+        document.getElementById('recipe-title').innerText = receta.titulo;
+        document.getElementById('recipe-subtitle').innerText = receta.sub;
+        document.getElementById('recipe-img').src = receta.imagen;
+        document.getElementById('recipe-tip').innerText = "Tip saludable: " + receta.tip;
+        
+        // 1. Limpiar e insertar Ingredientes
+        const listaIngredientes = document.getElementById('recipe-ingredients');
+        listaIngredientes.innerHTML = ""; 
+        receta.ingredientes.forEach(ing => {
+            let li = document.createElement('li');
+            li.innerText = ing;
+            listaIngredientes.appendChild(li);
+        });
+
+        // 2. Limpiar e insertar Pasos de forma individual
+        const listaPasos = document.getElementById('recipe-steps');
+        listaPasos.innerHTML = ""; // <-- ¡ESTO BORRA EL TEXTO CORRIDO ANTERIOR!
+        
+        receta.pasos.forEach(paso => {
+            let li = document.createElement('li');
+            li.innerText = paso;
+            listaPasos.appendChild(li);
+        });
+
+    } else {
+        document.getElementById('main-card').innerHTML = `
+            <div style="padding: 100px 20px; text-align: center;">
+                <h2>🥑 ¡Ups! Receta no encontrada</h2>
+                <p>Lo sentimos, esta receta aún está en nuestra cocina.</p>
+                <a href="index.html" style="color: #2f89fc; text-decoration: none; font-weight: bold;">Volver al inicio</a>
+            </div>`;
+    }
+    </script>
+</body>
+</html>
