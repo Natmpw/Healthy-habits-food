@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Libro</title>
+    <style>
+      :root {
+        --bg: #f5f1ea;
+        --panel: #ffffff;
+        --accent: #7c4dff;
+        --accent-dark: #5e35b1;
+        --text: #243447;
+        --muted: #6b7280;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f1ea 0%, #efe6da 100%);
+        color: var(--text);
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .card {
+        width: min(100%, 1100px);
+        min-height: 620px;
+        background: var(--panel);
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(36, 52, 71, 0.15);
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+      }
+
+      .cover {
+        background: linear-gradient(140deg, #fdf6e8 0%, #f1e1c6 100%);
+        padding: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .cover img {
+        width: min(100%, 440px);
+        max-width: 100%;
+        max-height: 560px;
+        height: auto;
+        min-width: 0;
+        object-fit: contain;
+      }
+
+      .content {
+        padding: 42px 36px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 2.2rem;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.6;
+        margin: 0 0 24px;
+      }
+
+      .price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--accent-dark);
+        margin-bottom: 24px;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 14px 24px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        background: var(--accent);
+        color: white;
+        width: fit-content;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .btn:hover {
+        background: var(--accent-dark);
+        transform: translateY(-2px);
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 14, 18, 0.6);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 1000;
+      }
+
+      .modal-backdrop.active { display: flex; }
+
+      .modal {
+        width: min(100%, 860px);
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .modal-left {
+        padding: 32px;
+        background: #fcf8f4;
+      }
+
+      .modal-right {
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .modal h2 { margin: 0 0 10px; font-size: 1.45rem; }
+      .modal p { margin: 0 0 16px; color: var(--muted); line-height: 1.6; }
+
+      .option {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 12px;
+        background: white;
+      }
+
+      .option label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .option small { display: block; color: var(--muted); margin-top: 6px; margin-left: 28px; }
+
+      .customize {
+        display: none;
+        margin-top: 12px;
+      }
+
+      .customize.active { display: block; }
+
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        margin-top: 8px;
+      }
+
+      .summary-box {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        background: #fafafa;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+      }
+
+      .summary-row strong { color: var(--accent-dark); }
+
+      .close-btn {
+        align-self: flex-end;
+        background: transparent;
+        border: none;
+        font-size: 1.3rem;
+        cursor: pointer;
+        color: var(--muted);
+      }
+
+      @media (max-width: 800px) {
+        .card, .modal { grid-template-columns: 1fr; }
+        .card { min-height: 0; }
+        .content { padding: 28px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <section class="cover" aria-label="Portada del libro">
+        <img src="imagenes/libro ca.png" alt="Portada del libro Healthy food & habits" />
+      </section>
+
+      <section class="content">
+        <h1>Libro</h1>
+        <p class="subtitle">
+          Descubre una lectura envolvente con una historia cautivadora, un estilo claro y una experiencia que te acompañará desde la primera página.
+        </p>
+        <div class="price">Desde S/10.00</div>
+        <button class="btn" id="buyBtn">Comprar</button>
+      </section>
+    </main>
+
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Ventana de compra">
+        <div class="modal-left">
+          <h2>Elige tu formato</h2>
+          <p>Selecciona si prefieres el libro digital o físico y personaliza tu compra.</p>
+
+          <div class="option">
+            <label>
+              <input type="radio" name="format" value="digital" checked />
+              <span>Libro digital</span>
+            </label>
+            <small>Acceso inmediato y envío por correo.</small>
+          </div>
+
+          <div class="option">
+            <label>
+              <input type="radio" name="format" value="fisico" />
+              <span>Libro físico</span>
+            </label>
+            <small>Envío a domicilio y opción de personalización.</small>
+          </div>
+
+          <div class="customize" id="customizeSection">
+            <label for="coverColor">Color de la tapa</label>
+            <select id="coverColor">
+              <option value="Azul marino">Azul marino</option>
+              <option value="Verde oscuro">Verde oscuro</option>
+              <option value="Rojo cereza">Rojo cereza</option>
+              <option value="Negro">Negro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-right">
+          <button class="close-btn" id="closeBtn" aria-label="Cerrar">×</button>
+
+          <div class="summary-box">
+            <h3>Resumen</h3>
+            <div class="summary-row"><span>Formato</span><strong id="summaryFormat">Digital</strong></div>
+            <div class="summary-row"><span>Precio</span><strong id="summaryPrice">S/10.00</strong></div>
+            <div class="summary-row"><span>Personalización</span><strong id="summaryCustomization">No aplica</strong></div>
+          </div>
+
+          <button class="btn" id="confirmBtn">Confirmar compra</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const buyBtn = document.getElementById('buyBtn');
+      const modalBackdrop = document.getElementById('modalBackdrop');
+      const closeBtn = document.getElementById('closeBtn');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const customizeSection = document.getElementById('customizeSection');
+      const summaryFormat = document.getElementById('summaryFormat');
+      const summaryPrice = document.getElementById('summaryPrice');
+      const summaryCustomization = document.getElementById('summaryCustomization');
+      const coverColor = document.getElementById('coverColor');
+      const formatRadios = document.querySelectorAll('input[name="format"]');
+
+      function updateSummary() {
+        const selected = document.querySelector('input[name="format"]:checked').value;
+        const isPhysical = selected === 'fisico';
+
+        customizeSection.classList.toggle('active', isPhysical);
+
+        if (isPhysical) {
+          summaryFormat.textContent = 'Físico';
+          summaryPrice.textContent = 'S/15.00';
+          summaryCustomization.textContent = coverColor.value;
+        } else {
+          summaryFormat.textContent = 'Digital';
+          summaryPrice.textContent = 'S/10.00';
+          summaryCustomization.textContent = 'No aplica';
+        }
+      }
+
+      buyBtn.addEventListener('click', () => {
+        modalBackdrop.classList.add('active');
+        updateSummary();
+      });
+
+      closeBtn.addEventListener('click', () => {
+        modalBackdrop.classList.remove('active');
+      });
+
+      modalBackdrop.addEventListener('click', (event) => {
+        if (event.target === modalBackdrop) {
+          modalBackdrop.classList.remove('active');
+        }
+      });
+
+      formatRadios.forEach((radio) => {
+        radio.addEventListener('change', updateSummary);
+      });
+
+      coverColor.addEventListener('change', updateSummary);
+
+      confirmBtn.addEventListener('click', () => {
+        window.location.href = 'confirmacion.html';
+      });
+    </script>
+  </body>
+</html>
