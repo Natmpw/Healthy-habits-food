@@ -315,23 +315,25 @@
 
       coverColor.addEventListener('change', updateSummary);
 
-      confirmBtn.addEventListener('click', () => {
-        window.location.href = 'confirmacion.html';
+confirmBtn.addEventListener('click', async () => {
+          // Capturamos qué seleccionó el usuario para mandárselo al servidor después
+          const formatoSeleccionado = document.querySelector('input[name="format"]:checked').value;
+          const colorSeleccionado = coverColor.value;
+
+          try {
+              // 1. Le tocamos la puerta a tu servidor en Render
+              const respuesta = await fetch('https://healthy-ajwn.onrender.com/');
+              const datos = await respuesta.json();
+
+              // 2. Si responde bien, mostramos la alerta de prueba
+              alert(datos.mensaje); 
+              
+              // (Aquí después redirigiremos o abriremos la pasarela real)
+          } catch (error) {
+              console.error("Error al conectar con el servidor:", error);
+              alert("No se pudo conectar con el servidor de pagos.");
+          }
       });
-      <!-- parte del codigo de pago-->
-        const confirmarBtn = document.getElementById('confirmBtn');
-
-        confirmarBtn.addEventListener('click', async () => {
-            try {
-                const respuesta = await fetch('https://healthy-ajwn.onrender.com/');
-                const datos = await respuesta.json();
-
-                alert(datos.mensaje); 
-            } catch (error) {
-                console.error("Error al conectar con el servidor:", error);
-                alert("No se pudo conectar con el servidor de pagos.");
-            }
-        });
     </script>
   </body>
 </html>
