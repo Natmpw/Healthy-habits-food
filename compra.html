@@ -318,6 +318,20 @@
       confirmBtn.addEventListener('click', () => {
         window.location.href = 'confirmacion.html';
       });
+      <!-- parte del codigo de pago-->
+        const confirmarBtn = document.getElementById('confirmBtn');
+
+        confirmarBtn.addEventListener('click', async () => {
+            try {
+                const respuesta = await fetch('https://healthy-ajwn.onrender.com/');
+                const datos = await respuesta.json();
+
+                alert(datos.mensaje); 
+            } catch (error) {
+                console.error("Error al conectar con el servidor:", error);
+                alert("No se pudo conectar con el servidor de pagos.");
+            }
+        });
     </script>
   </body>
 </html>
